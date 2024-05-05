@@ -1,71 +1,53 @@
-import logo from './logo.svg';
 import './App.css';
-
-//Component
-//props = argument
-function Header(props) {
-  return (
-    <header>
-      <h1><a href="/" onClick={(e) => {
-        e.preventDefault();//a tag default action not work
-        props.onChangeMode();
-      }}>{props.title}</a></h1>
-    </header>
-  )//{}=> var를 쓸때 필수
-}
-
-function Nav(props){
-  /*
-  const lis =[];
-  for(let i=0; i<props.topics.length; i++){
-    let t = props.topics[i];
-    lis.push(<li key={t.id}><a href={'/read/'+t.id}>{t.title}</a></li>)
-  }*/
-  //used map function
-  const list = props.topics.map((t) => {
-      return <li key={t.id}>
-              <a id ={t.id} href={'/read/'+t.id} onClick ={(e)=>{
-                e.preventDefault();
-                props.onChangeMode(e.target.id);//e.target = event를 발생시킨 tag (여기서는 a)
-              }}>{t.title}</a>
-              </li>
-      });
-
-  return (
-    <nav>
-      <ol>
-        {list}
-      </ol>
-    </nav>
-  )
-}
-
-function Article(props){
-  return (
-    <article>
-      <h2>{props.title}</h2>
-      {props.body}
-    </article>
-  )
-}
+import {useState} from 'react';
+import Header from './Header.js';
+import Article from './Article.js';
+import Nav from './Nav.js';
+import Create from './Create.js';
 //className = class를 의미 ==> css사용
 //const => 다른 함수에서 수정 불가
 function App() {
-  const topics = [
+  const [mode, setMode] = useState('WELCOME');//0번째 상태의 데이터, 1번째는 상태를 변경할때 사용하는 함수
+  const [id , setId] = useState(null);
+  const [nextId , setNextId] = useState(4);
+  const [topics, setToipcs] = useState([
     {id: 1, title: 'html', body:"html is ..."},
     {id: 2, title: 'javascript',  body:"javascript is ..."},
     {id: 3, title: 'css', body:"css is ..."},
-  ];
+  ]);
+
+  let content = null;
+  if(mode === 'WELCOME') {
+    content = <Article title="Welcom" body="Hello, WEB"/>
+  } else if(mode === 'READ') {
+    const topic = topics.find((t) => t.id === id);
+    content =<Article title={topic.title} body={topic.body}/> 
+  } else if(mode === 'CREATE') {
+    content =<Create onCreate={(title, body)=>{
+      const newTopic = {id: nextId, title: title, body: body};
+      const newTopics =[...topics];
+      newTopics.push(newTopic);
+      setToipcs(newTopics);
+      setMode('READ');
+      setId(nextId);
+      setNextId(nextId + 1);
+    }}/>
+  }
 
   return (
     <div>
       <Header title="REACT" onChangeMode={() => {
-        alert('Header changed');
+        setMode('WELCOME');
       }}/>
       <Nav topics={topics} onChangeMode={(id) =>{
-        alert(id);
+        setMode('READ');
+        setId(Number(id));//tag의 속성으로 넘긴건 문자이다.
       }}/>
-      <Article title="Welcom" body="Hello, React"/>
+      {content}
+      <a href="/create" onClick={(e)=>{
+        e.preventDefault();
+        setMode('CREATE');
+      }}>Create</a>
       </div>
   );
 }
