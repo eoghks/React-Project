@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import App from './App';//Mean </App /> './App' = 파일 위치(App.js를 의미한다.)
 import reportWebVitals from './reportWebVitals';
-
+//npm start 시 index.js를 찾음 -> index.js는 입구이다.
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
