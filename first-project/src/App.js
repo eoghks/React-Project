@@ -6,7 +6,10 @@ import './App.css';
 function Header(props) {
   return (
     <header>
-      <h1><a href="/">{props.title}</a></h1>
+      <h1><a href="/" onClick={(e) => {
+        e.preventDefault();//a tag default action not work
+        props.onChangeMode();
+      }}>{props.title}</a></h1>
     </header>
   )//{}=> var를 쓸때 필수
 }
@@ -19,7 +22,14 @@ function Nav(props){
     lis.push(<li key={t.id}><a href={'/read/'+t.id}>{t.title}</a></li>)
   }*/
   //used map function
-  const list = props.topics.map((t) => {return <li key={t.id}><a href={'/read/'+t.id}>{t.title}</a></li>})
+  const list = props.topics.map((t) => {
+      return <li key={t.id}>
+              <a id ={t.id} href={'/read/'+t.id} onClick ={(e)=>{
+                e.preventDefault();
+                props.onChangeMode(e.target.id);//e.target = event를 발생시킨 tag (여기서는 a)
+              }}>{t.title}</a>
+              </li>
+      });
 
   return (
     <nav>
@@ -49,8 +59,12 @@ function App() {
 
   return (
     <div>
-      <Header title="REACT"/>
-      <Nav topics={topics}/>
+      <Header title="REACT" onChangeMode={() => {
+        alert('Header changed');
+      }}/>
+      <Nav topics={topics} onChangeMode={(id) =>{
+        alert(id);
+      }}/>
       <Article title="Welcom" body="Hello, React"/>
       </div>
   );
