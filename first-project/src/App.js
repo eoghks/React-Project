@@ -25,13 +25,23 @@ function App() {
     const topic = topics.find((t) => t.id === id);
     content =<Article title={topic.title} body={topic.body}/> 
     contextControl =
-    <li>
-      <a href={"/update/" + id} onClick={(e)=>{
-        e.preventDefault();
-        setMode('UPDATE');
-      }}>Update
-      </a>
-    </li>;
+    <>
+      <li>
+        <a href={"/update/" + id} onClick={(e)=>{
+          e.preventDefault();
+          setMode('UPDATE');
+        }}>Update
+        </a>
+      </li>
+      <li>
+        <input type='button' value="Delete" onClick={()=>{
+          const newTopics = topics.filter((t) => t.id!== id);
+          //const newTopics = [...topics];
+          setToipcs(newTopics);
+          setMode('WELCOME');
+        }}></input>
+      </li>
+    </>
   } else if(mode === 'CREATE') {
     content =<Create onCreate={(title, body)=>{
       const newTopic = {id: nextId, title: title, body: body};
